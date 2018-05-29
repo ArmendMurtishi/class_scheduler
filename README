@@ -1,0 +1,3 @@
+A class scheduler.
+A file is taken as input with students and the classes that they wish to take,
+and schedules are randomly generated to fit the most students' requests and requirements.
