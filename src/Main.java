@@ -1,7 +1,7 @@
-public class Main {
-
-    public static void main(String[] args) {
-	    // write your code here
-	    System.out.println("Hello World!");
+public class Main
+{
+    // Get the file from args, use Scheduler to generate the schedules, and save them to unique files.
+    public static void main(String[] args)
+    {
     }
 }

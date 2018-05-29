@@ -1,3 +1,14 @@
 A class scheduler.
 A file is taken as input with students and the classes that they wish to take,
 and schedules are randomly generated to fit the most students' requests and requirements.
+
+FILE FORMAT:
+(Student Name), (Grade)
+REQUIRED:
+(All required-to-take classes, each separated by a newline)
+REQUESTED:
+(All requested electives, each separated by a newline)
+- empty line -
+(Student Name), (Grade)
+REQUIRED:
+...
