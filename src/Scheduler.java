@@ -6,8 +6,14 @@ public class Scheduler
     private ArrayList<String> globalSchedule;
     private HashMap<String, ArrayList<String>> studentSchedules;
     
-    public ArrayList<String> getGlobalSchedule() { return globalSchedule; }
-    public HashMap<String, ArrayList<String>> getStudentSchedules() { return studentSchedules; }
+    public ArrayList<String> getGlobalSchedule() 
+    {
+        return globalSchedule; 
+    }
+    public HashMap<String, ArrayList<String>> getStudentSchedules() 
+    {
+        return studentSchedules; 
+    }
     
     // Generate a HashMap associating a student name with an ArrayList of their classes.
     public Scheduler(String file)
@@ -21,4 +27,15 @@ public class Scheduler
         this.globalSchedule = globalSchedule;
         this.studentSchedules = studentSchedules;
     }
+    
+    public boolean classFitsInSchedule()
+    {
+        if(//index of desired class in global schedule == index of an already scheduled class)
+        {
+            return true;
+        }
+        return false; 
+    }
+    
+    public 
 }
