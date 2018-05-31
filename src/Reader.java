@@ -14,10 +14,11 @@ public class Reader
      * List_Classes
      *    List_Classes \n Class (String)
      */
-    public static ArrayList<Student> read(String file)
+    public static ArrayList<Student> read(String file) { return list_students(file); }
+    
+    private static ArrayList<Student> list_students(String file)
     {
-        ArrayList<Student> result = new ArrayList<Student>();
-        
-        return result;
+        ArrayList<Student> res = new ArrayList<Student>();
+        return res;
     }
 }
