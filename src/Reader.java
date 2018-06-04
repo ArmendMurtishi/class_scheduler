@@ -1,6 +1,7 @@
 // Reads in the file based on the format in the README and creates Student objects
 // based on it.
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Reader
 {
