@@ -18,11 +18,24 @@ public class Reader
     
     private static Student student(Scanner file)
     {
-        while(file.hasNextLine())
-        {
-            // Match a comma and then 0 or more spaces
-            file.useDelimiter(",\\s*");
-        }
+        if(!file.hasNextLine())
+            return null;
+        
+        // Match the name and the grade.
+        file.findInLine("^(\\w+\\s+\\w+),\\s*(\\d+)$");
+        MatchResult mres = file.match();
+        // We should have matched a name and a grade.
+        // If not, throw an error.
+        if(!mres.groupCount() == 2)
+            // throw
+        String name = mres.group(1); // indexes start at 1 for these for some reason
+        int grade = Integer.parseInt(mres.group(2));
+        file.nextLine();
+        try { file.next("^REQUIRED:$"); file.nextLine(); }
+        catch(NoSuchElementException exc) { /* throw */ }
+        // Now that we have the name and grade, proceed with getting both class lists.
+        // By the grammar, this will call another function.
+        
     }
     private static ArrayList<Student> list_students(Scanner file)
     {
