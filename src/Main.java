@@ -7,15 +7,22 @@ public class Main
         
     }
     /**
-     * This method inputs the student objects state into the method, and then 
+     * This method inputs the student objects state into the method
+     * Then writes the students into the file that will be read to the schedule 
+     * 
+     * 6 errors
      */
-    public void whenWriteStringUsingBufferedWritter_thenCorrect(String fileName) throws IOException 
+    public void writeFile(getStudentSchedules()) throws IOException 
+    {
+        for(Map.Entry<String, HashMap> entry : getStudentSchedules().entrySet())
         {
-            String name = "Hello";
-            String grade = 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-            writer.write(str);
-     
-            writer.close();
+            BufferedWriter admin = new BufferedWriter(new FileWriter(fileName));
+            admin.write(getName());
+            admin.write(getGrade()):
+            admin.write(hasRequired());
+            admin.write(hasRequested());
+            admin.close();
         }
+    }
+    
 }
