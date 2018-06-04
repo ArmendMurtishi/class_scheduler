@@ -1,0 +1,6 @@
+#!/bin/bash
+cd tests
+javac ../src/*.java -d .
+javac -cp .:.junit.jar:.hamcrest-core.jar TestSuite.java
+java -cp .:.junit.jar:.hamcrest-core.jar org.junit.runner.JUnitCore TestSuite
+rm *.class
