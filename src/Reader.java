@@ -46,17 +46,17 @@ public class Reader
             return null;
         
         // Match the name and the grade.
-        file.findInLine("^(\\w+\\s+\\w+),\\s*(\\d+)$");
-        MatchResult mres = file.match();
+        file.findInLine("^(\\w+\\s+\\w+),\\s*(\\d+)");
+        MatchResult mres;
+        try { mres = file.match(); }
         // We should have matched a name and a grade.
         // If not, throw an error.
-        if(mres.groupCount() < 2)
-            throw new RuntimeException("Missing name or grade.");
-        else if(mres.groupCount() > 2)
-            throw new RuntimeException("Extra input than the expected \"Name, Grade\".");
+        catch(IllegalStateException exc)
+        { throw new RuntimeException("Improper format for name and grade. Expected \"(Name), (Grade)\"."); }
         String name = mres.group(1); // indexes start at 1 for these for some reason
         int grade = Integer.parseInt(mres.group(2));
-        try { file.skip("^" + REQUIRED_SEPARATOR + "$"); }
+        file.nextLine();
+        try { file.skip("^" + REQUIRED_SEPARATOR); file.nextLine(); }
         catch(NoSuchElementException exc) { throw new RuntimeException("Missing \"" + REQUIRED_SEPARATOR + "\"."); }
         // Now that we have the name and grade, proceed with getting both class lists.
         // By the grammar, this will call another function.
