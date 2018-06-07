@@ -29,12 +29,12 @@ public class Reader
     private static String class_name(Scanner file)
     {
         String s = file.nextLine();
-        if(s.equals(REQUESTED_SEPARATOR) || s.equals("\n"))
+        if(s.equals(REQUESTED_SEPARATOR) || s.isEmpty())
             return null;
         // Check that the class is made up only of alphanumeric characters.
         // It is very difficult to figure out if the user missed a separator,
         // so the best we can do is warn them when we find a line not following the class criteria.
-        if(!s.matches("^\\w+$"))
+        if(!s.matches("^[\\w\\s]+$"))
             throw new RuntimeException(ERROR_MISSING_REQUESTED_OR_NEW);
         return s;
     }
@@ -53,12 +53,11 @@ public class Reader
         
         // Match the name and the grade.
         String line = file.nextLine();
-        Matcher mres;
-        try { mres = Pattern.compile("^(\\w+\\s+\\w+),\\s*(\\d+)$").matcher(line); }
+        Matcher mres = Pattern.compile("^(\\w+\\s+\\w+),\\s*(\\d+)$").matcher(line);
         // We should have matched a name and a grade.
         // If not, throw an error.
-        catch(IllegalStateException exc)
-        { throw new RuntimeException(ERROR_IMPROPER_NAME_GRADE + "\"" + line + "\"."); }
+        if(!mres.find())
+            throw new RuntimeException(ERROR_IMPROPER_NAME_GRADE + "\"" + line + "\".");
         String name = mres.group(1); // indexes start at 1 for these for some reason
         int grade = Integer.parseInt(mres.group(2));
         

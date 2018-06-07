@@ -1,14 +1,16 @@
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import static org.hamcrest.CoreMatchers.containsString;
+
 import java.util.ArrayList;
 
 public class ReaderTest
 {
     public static String correct = "Armend Murtishi, 10\n"
                                  + "REQUIRED:\n"
-                                 + "Math"
-                                 + "Science"
+                                 + "Math\n"
+                                 + "Science\n"
                                  + "REQUESTED:\n"
                                  + "An elective\n\n";
     public static String nocomma = "Armend Murtishi 10\n";
@@ -25,7 +27,7 @@ public class ReaderTest
     public void testNoComma()
     {
         thrown.expect(RuntimeException.class);
-        thrown.expectMessage("Improper format for name and grade. Expected \"(Name), (Grade)\".");
+        thrown.expectMessage(containsString(Reader.ERROR_IMPROPER_NAME_GRADE));
         ArrayList<Student> a = Reader.read(nocomma);
     }
 }
