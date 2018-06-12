@@ -57,7 +57,6 @@ public class Scheduler
     private void findAndScheduleMostCommonRequired(ArrayList<Student> students)
     {
         ArrayList<String> unique = Utils.copyStrings(uniqueClasses);
-        System.out.println(unique);
         String mostcommon = "";
         int max_count = 0, count = 0;
         ArrayList<Student> studentsInMaxClass = new ArrayList<Student>(), studentsInCurrentClass = new ArrayList<Student>();
