@@ -59,7 +59,7 @@ public class Scheduler
         ArrayList<String> unique = Utils.copyStrings(uniqueClasses);
         String mostcommon = "";
         ArrayList<Student> studentsInMaxClass = new ArrayList<Student>(), studentsInCurrentClass = new ArrayList<Student>();
-        for(int i = 0; i < unique.size(); i++, studentsInCurrentClass.clear())
+        for(int i = 0; i < unique.size(); i++, studentsInCurrentClass = new ArrayList<Student>())
         {
             for(Student s : students)
                 if(s.hasRequired(unique.get(i)))
@@ -67,7 +67,7 @@ public class Scheduler
             if(studentsInCurrentClass.size() >= studentsInMaxClass.size())
             {
                 mostcommon = unique.get(i);
-                studentsInMaxClass = Utils.copyStudents(studentsInCurrentClass);
+                studentsInMaxClass = studentsInCurrentClass;
             }
         }
         schedule(mostcommon, currentBlock, studentsInMaxClass);
