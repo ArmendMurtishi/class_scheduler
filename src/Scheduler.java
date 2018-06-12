@@ -16,6 +16,7 @@ public class Scheduler
     
     private int currentBlock = 0;
     private ArrayList<String> uniqueClasses;
+    private ArrayList<Student> students;
     private ArrayList<String> classBuffer = new ArrayList<String>();
     
     public void generate()
@@ -24,7 +25,7 @@ public class Scheduler
         Reader r = new Reader(file);
         r.read();
         uniqueClasses = r.getUniqueClasses();
-        ArrayList<Student> students = r.getStudents();
+        students = r.getStudents();
         // Then, add all of them to the HashMap.
         for(Student s : students)
             studentSchedules.put(s.getName(), new ArrayList<String>());
@@ -33,7 +34,7 @@ public class Scheduler
         {
             while(!uniqueClasses.isEmpty())
             {
-                findAndScheduleMostCommonRequired(students);
+                findAndScheduleMostCommonRequired();
             }
             advanceBlock();
         }
@@ -54,7 +55,7 @@ public class Scheduler
         return false;
     }
     
-    private void findAndScheduleMostCommonRequired(ArrayList<Student> students)
+    private void findAndScheduleMostCommonRequired()
     {
         ArrayList<String> unique = Utils.copyStrings(uniqueClasses);
         String mostcommon = "";
