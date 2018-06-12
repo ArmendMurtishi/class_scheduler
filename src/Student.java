@@ -13,6 +13,14 @@ public class Student
         this.required = required;
         this.requested = requested;
     }
+    // Copy a student.
+    public Student(Student other)
+    {
+        name = new String(other.name);
+        grade = other.grade;
+        required = Utils.copyStrings(other.required);
+        requested = Utils.copyStrings(other.requested);
+    }
     
     public boolean hasAnyRequired() { return required.size() != 0; }
     public boolean hasAnyRequested() { return requested.size() != 0; }

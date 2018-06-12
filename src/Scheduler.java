@@ -8,14 +8,10 @@ public class Scheduler
     private ArrayList<ArrayList<String>> globalSchedule;
     private HashMap<String, ArrayList<String>> studentSchedules;
     
-    public ArrayList<ArrayList<String>> getGlobalSchedule() 
-    {
-        return globalSchedule; 
-    }
-    public HashMap<String, ArrayList<String>> getStudentSchedules() 
-    {
-        return studentSchedules; 
-    }
+    public ArrayList<ArrayList<String>> getGlobalSchedule() { return globalSchedule; }
+    public HashMap<String, ArrayList<String>> getStudentSchedules() { return studentSchedules; }
+    
+    private int currentBlock = 0;
     
     // Generate a HashMap associating a student name with an ArrayList of their classes.
     public Scheduler(String file)
@@ -29,18 +25,25 @@ public class Scheduler
         this.studentSchedules = studentSchedules;
     }
     
-    public void generateSchedules()
+    public void generate()
     {
         // First, read the file into an ArrayList of students, checking for errors.
-        ArrayList<Student> students = Reader.read(file);
+        Reader r = new Reader(file);
+        r.read();
+        this.globunique = r.getUniqueClasses();
+        ArrayList<Student> students = r.getStudents();
         // Then, add all of them to the HashMap.
         for(Student s : students)
             studentSchedules.put(s.getName(), new ArrayList<String>());
-        
-        while(anyStudentHasAnyRequired(students))
+
+        //while(anyStudentHasAnyRequired(students))
+        for(int i = 0; i < 3; i++)
         {
-            String mostcommon = findMostCommonRequired(unique, students);
-            globalSchedule.get(0 /*block 0*/).add(mostcommon);
+            while(!globunique.isEmpty())
+            {
+                findAndScheduleMostCommonRequired(students);
+            }
+            advanceBlock();
         }
     }
     
@@ -51,13 +54,24 @@ public class Scheduler
                 return true;
         return false;
     }
-    
-    private void findAndScheduleMostCommonRequired(ArrayList<String> unique, ArrayList<Student> students)
+    private boolean anyStudentHasRequired(ArrayList<Student> students, String className)
     {
+        for(Student s : students)
+            if(s.hasRequired(className))
+                return true;
+        return false;
+    }
+    
+    private ArrayList<String> classBuffer = new ArrayList<String>();
+    private ArrayList<String> globunique;
+    
+    private void findAndScheduleMostCommonRequired(ArrayList<Student> students)
+    {
+        ArrayList<String> unique = Utils.copyStrings(globunique);
         String mostcommon = "", current;
-        int max_count = 0, count;
+        int max_count = 0, count = 0;
         ArrayList<Student> studentsInMaxClass = new ArrayList<Student>(), studentsInCurrentClass = new ArrayList<Student>();
-        for(current = unique.remove(0), count = 0; !unique.isEmpty(); current = unique.remove(0), studentsInCurrentClass.clear())
+        for(current = unique.remove(0); !unique.isEmpty(); current = unique.remove(0), studentsInCurrentClass.clear(), count = 0)
         {
             for(Student s : students)
                 if(s.hasRequired(current))
@@ -67,11 +81,21 @@ public class Scheduler
                 }
             if(count >= max_count)
             {
+                max_count = count;
                 mostcommon = current;
-                studentsInMaxClass = studentsInCurrentClass;
+                studentsInMaxClass = Utils.copyStudents(studentsInCurrentClass);
             }
         }
-        schedule(mostcommon, studentsInMaxClass);
+        schedule(mostcommon, currentBlock, studentsInMaxClass);
+        // Now that the class has been scheduled, remove it for later consideration.
+        globunique.remove(globunique.indexOf(mostcommon));
+        
+        for(int i = 0; i < globunique.size(); i++)
+            if(anyStudentHasRequired(studentsInMaxClass, globunique.get(i)))
+            {
+                classBuffer.add(globunique.remove(i));
+                i--;
+            }
     }
     
     private void schedule(String classname, int block, ArrayList<Student> students)
@@ -84,12 +108,10 @@ public class Scheduler
         globalSchedule.get(block).add(classname);
     }
     
-    public boolean classFitsInSchedule()
+    private void advanceBlock()
     {
-        /*if(//index of desired class in global schedule == index of an already scheduled class)
-        {
-            return true;
-        }*/
-        return false;
+        for(int i = 0; i < classBuffer.size(); i++)
+            globunique.add(classBuffer.remove(0));
+        currentBlock++;
     }
 }
