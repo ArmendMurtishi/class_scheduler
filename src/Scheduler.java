@@ -33,9 +33,7 @@ public class Scheduler
         while(anyStudentHasAnyRequired(students))
         {
             while(!uniqueClasses.isEmpty())
-            {
                 findAndScheduleMostCommonRequired();
-            }
             advanceBlock();
         }
     }
@@ -57,17 +55,16 @@ public class Scheduler
     
     private void findAndScheduleMostCommonRequired()
     {
-        ArrayList<String> unique = Utils.copyStrings(uniqueClasses);
         String mostcommon = "";
         ArrayList<Student> studentsInMaxClass = new ArrayList<Student>(), studentsInCurrentClass = new ArrayList<Student>();
-        for(int i = 0; i < unique.size(); i++, studentsInCurrentClass = new ArrayList<Student>())
+        for(int i = 0; i < uniqueClasses.size(); i++, studentsInCurrentClass = new ArrayList<Student>())
         {
             for(Student s : students)
-                if(s.hasRequired(unique.get(i)))
+                if(s.hasRequired(uniqueClasses.get(i)))
                     studentsInCurrentClass.add(s);
             if(studentsInCurrentClass.size() >= studentsInMaxClass.size())
             {
-                mostcommon = unique.get(i);
+                mostcommon = uniqueClasses.get(i);
                 studentsInMaxClass = studentsInCurrentClass;
             }
         }
