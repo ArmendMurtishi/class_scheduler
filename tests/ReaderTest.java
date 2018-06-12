@@ -40,18 +40,30 @@ public class ReaderTest
     @Test
     public void testCorrect()
     {
-        ArrayList<Student> a = Reader.read(correct);
+        Reader r = new Reader(correct);
+        r.read();
+        // Check to see if everything was imported correctly.
+        ArrayList<Student> a = r.getStudents();
         assertEquals(a.size(), 1);
         assertEquals(a.get(0).getName(), "Armend Murtishi");
         assertEquals(a.get(0).getGrade(), 10);
         assertTrue(a.get(0).hasRequired("Math"));
         assertTrue(a.get(0).hasRequired("Science"));
         assertTrue(a.get(0).hasRequested("An elective"));
+        // Each class here should be shown in the unique classes list.
+        ArrayList<String> u = r.getUniqueClasses();
+        assertEquals(u.size(), 3);
+        assertEquals(u.get(0), "Math");
+        assertEquals(u.get(1), "Science");
+        assertEquals(u.get(2), "An elective");
     }
     @Test
     public void testCorrectMultipleStudents()
     {
-        ArrayList<Student> a = Reader.read(correctMultipleStudents);
+        Reader r = new Reader(correctMultipleStudents);
+        r.read();
+        ArrayList<Student> a = r.getStudents();
+        
         assertEquals(a.size(), 2);
         
         assertEquals(a.get(0).getName(), "Armend Murtishi");
@@ -65,19 +77,30 @@ public class ReaderTest
         assertTrue(a.get(1).hasRequired("Test Class"));
         assertTrue(a.get(1).hasRequired("Test Class 2"));
         assertFalse(a.get(1).hasAnyRequested());
+        
+        // Now check the unique classes list.
+        ArrayList<String> u = r.getUniqueClasses();
+        assertEquals(u.size(), 5);
+        assertEquals(u.get(0), "Math");
+        assertEquals(u.get(1), "Science");
+        assertEquals(u.get(2), "An elective");
+        assertEquals(u.get(3), "Test Class");
+        assertEquals(u.get(4), "Test Class 2");
     }
     @Test
     public void testNoComma()
     {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(containsString(Reader.ERROR_IMPROPER_NAME_GRADE));
-        Reader.read(nocomma);
+        Reader r = new Reader(nocomma);
+        r.read();
     }
     @Test
     public void testMissingRequired()
     {
         thrown.expect(RuntimeException.class);
         thrown.expectMessage(containsString(Reader.ERROR_MISSING_REQUIRED));
-        Reader.read(missingrequired);
+        Reader r = new Reader(missingrequired);
+        r.read();
     }
 }

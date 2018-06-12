@@ -46,7 +46,8 @@ public class Reader
         if(!s.matches("^[\\w\\s]+$"))
             throw new RuntimeException(ERROR_MISSING_REQUESTED_OR_NEW);
         // If we have a proper class name, add it to the unique classes list.
-        this.allUniqueClasses.add(s);
+        if(!this.allUniqueClasses.contains(s))
+            allUniqueClasses.add(s);
         return s;
     }
     private ArrayList<String> list_classes(Scanner file)
