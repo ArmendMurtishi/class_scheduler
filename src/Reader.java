@@ -1,5 +1,16 @@
-// Reads in the file based on the format in the README and creates Student objects
-// based on it.
+/* Parse the file given, generating an ArrayList of students and checking for any errors.
+ * The format followed is that shown in the README.
+ * The best way to do this is to write a grammar that we can interpret in this function.
+ * Grammar:
+ * List_Students
+ *   List_Students \n Student
+ * Student
+ *   Name (String), Grade (int) \n "REQUIRED:" \n List_Classes \n "REQUESTED:" \n List_Classes \n
+ * List_Classes
+ *    List_Classes \n Class (String)
+ * 
+ * The methods are named in accordance with their names in the grammar.
+ */
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -14,19 +25,17 @@ public class Reader
     public static final String ERROR_MISSING_REQUIRED = "Missing \"" + REQUIRED_SEPARATOR + "\"!\nExpected \"" + REQUIRED_SEPARATOR + "\"\nGot ";
     public static final String ERROR_MISSING_REQUESTED_OR_NEW = "Found non-alphanumeric character in class name!\nDid you forget a \"" + REQUESTED_SEPARATOR + "\" or a blank line between students before this?";
     
-    /* Parse the file given, generating an ArrayList of students and checking for any errors.
-     * The best way to do this is to write a grammar that we can interpret in this function.
-     * Grammar:
-     * List_Students
-     *   List_Students \n Student
-     * Student
-     *   Name (String), Grade (int) \n "REQUIRED:" \n List_Classes \n "REQUESTED:" \n List_Classes \n
-     * List_Classes
-     *    List_Classes \n Class (String)
-     */
-    public static ArrayList<Student> read(String file) { return list_students(new Scanner(file)); }
+    private ArrayList<String> allUniqueClasses = new ArrayList<String>();
+    private ArrayList<Student> students = new ArrayList<Student>();
+    public ArrayList<String> getUniqueClasses() { return allUniqueClasses; }
+    public ArrayList<Student> getStudents() { return students; }
     
-    private static String class_name(Scanner file)
+    private String file;
+    public Reader(String file) { this.file = file; }
+    
+    public void read() { list_students(new Scanner(file)); }
+    
+    private String class_name(Scanner file)
     {
         String s = file.nextLine();
         if(s.equals(REQUESTED_SEPARATOR) || s.isEmpty())
@@ -36,9 +45,11 @@ public class Reader
         // so the best we can do is warn them when we find a line not following the class criteria.
         if(!s.matches("^[\\w\\s]+$"))
             throw new RuntimeException(ERROR_MISSING_REQUESTED_OR_NEW);
+        // If we have a proper class name, add it to the unique classes list.
+        this.allUniqueClasses.add(s);
         return s;
     }
-    private static ArrayList<String> list_classes(Scanner file)
+    private ArrayList<String> list_classes(Scanner file)
     {
         ArrayList<String> res = new ArrayList<String>();
         String c;
@@ -46,7 +57,7 @@ public class Reader
             res.add(c);
         return res;
     }
-    private static Student student(Scanner file)
+    private Student student(Scanner file)
     {
         if(!file.hasNextLine())
             return null;
@@ -72,12 +83,12 @@ public class Reader
         
         return new Student(name, grade, required, requested);
     }
-    private static ArrayList<Student> list_students(Scanner file)
+    private void list_students(Scanner file)
     {
         ArrayList<Student> res = new ArrayList<Student>();
         Student s;
         while((s = student(file)) != null)
             res.add(s);
-        return res;
+        this.students = res;
     }
 }
