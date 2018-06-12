@@ -22,8 +22,8 @@ public class Student
         requested = Utils.copyStrings(other.requested);
     }
     
-    public boolean hasAnyRequired() { return required.size() != 0; }
-    public boolean hasAnyRequested() { return requested.size() != 0; }
+    public boolean hasAnyRequired() { return !required.isEmpty(); }
+    public boolean hasAnyRequested() { return !requested.isEmpty(); }
     
     // Check if a class is part of the required ArrayList.
     public boolean hasRequired(String s) { return required.contains(s); }
