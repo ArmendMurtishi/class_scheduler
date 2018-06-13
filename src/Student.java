@@ -21,8 +21,8 @@ public class Student
     public boolean hasRequired(String s) { return required.contains(s); }
     public boolean hasRequested(String s) { return requested.contains(s); }
     
-    public void removeRequired(String s) { required.remove(required.indexOf(s)); }
-    public void removeRequested(String s) { requested.remove(requested.indexOf(s)); }
+    public void removeRequired(String s) { required.remove(s); }
+    public void removeRequested(String s) { requested.remove(s); }
     
     public String getName() { return name; }
     public int getGrade() { return grade; }
