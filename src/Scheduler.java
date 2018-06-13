@@ -1,17 +1,21 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Collections;
 
 public class Scheduler
 {
     private String file;
-    private ArrayList<ArrayList<String>> globalSchedule = new ArrayList<ArrayList<String>>(Collections.nCopies(8, new ArrayList<String>()));
+    private ArrayList<ArrayList<String>> globalSchedule = new ArrayList<ArrayList<String>>();
     private HashMap<String, ArrayList<String>> studentSchedules = new HashMap<String, ArrayList<String>>();
     
     public ArrayList<ArrayList<String>> getGlobalSchedule() { return globalSchedule; }
     public HashMap<String, ArrayList<String>> getStudentSchedules() { return studentSchedules; }
     
-    public Scheduler(String file) { this.file = file; }
+    public Scheduler(String file)
+    {
+        this.file = file;
+        for(int i = 0; i < 8 /* max blocks */; i++)
+            globalSchedule.add(new ArrayList<String>());
+    }
     
     
     private int currentBlock = 0;

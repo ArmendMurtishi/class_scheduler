@@ -27,13 +27,16 @@ public class SchedulerTest
     {
         Scheduler s = new Scheduler(test1);
         s.generate();
-        assertEquals(2, s.getGlobalSchedule().get(0).size());
+        assertEquals(1, s.getGlobalSchedule().get(0).size());
+        assertEquals(2, s.getGlobalSchedule().get(1).size());
         assertEquals("Math", s.getGlobalSchedule().get(0).get(0));
         assertEquals("Math", s.getStudentSchedules().get("Armend Murtishi").get(0));
         assertEquals("Math", s.getStudentSchedules().get("Test Student").get(0));
         assertEquals("Math", s.getStudentSchedules().get("Test Studen").get(0));
-        assertEquals("Science", s.getGlobalSchedule().get(0).get(1));
+        assertEquals("Science", s.getGlobalSchedule().get(1).get(0));
         assertEquals("Science", s.getStudentSchedules().get("Armend Murtishi").get(1));
         assertEquals("Science", s.getStudentSchedules().get("Test Studen").get(1));
+        assertEquals("Test Class 2", s.getGlobalSchedule().get(1).get(1));
+        assertEquals("Test Class 2", s.getStudentSchedules().get("Test Student").get(1));
     }
 }
