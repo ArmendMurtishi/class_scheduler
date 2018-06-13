@@ -34,27 +34,12 @@ public class Scheduler
         for(Student s : students)
             studentSchedules.put(s.getName(), new ArrayList<String>());
 
-        while(anyStudentHasAnyRequired(students))
+        while(students.stream().anyMatch((s) -> s.hasAnyRequired()))
         {
             while(!uniqueClasses.isEmpty())
                 findAndScheduleMostCommonRequired();
             advanceBlock();
         }
-    }
-    
-    private boolean anyStudentHasAnyRequired(ArrayList<Student> students)
-    {
-        for(Student s : students)
-            if(s.hasAnyRequired())
-                return true;
-        return false;
-    }
-    private boolean anyStudentHasRequired(ArrayList<Student> students, String className)
-    {
-        for(Student s : students)
-            if(s.hasRequired(className))
-                return true;
-        return false;
     }
     
     private void findAndScheduleMostCommonRequired()
@@ -77,11 +62,14 @@ public class Scheduler
         uniqueClasses.remove(uniqueClasses.indexOf(mostcommon));
         
         for(int i = 0; i < uniqueClasses.size(); i++)
-            if(anyStudentHasRequired(studentsInMaxClass, uniqueClasses.get(i)))
+        {
+            String className = uniqueClasses.get(i);
+            if(studentsInMaxClass.stream().anyMatch((s) -> s.hasRequired(className)))
             {
                 classBuffer.add(uniqueClasses.remove(i));
                 i--;
             }
+        }
     }
     
     private void schedule(String classname, int block, ArrayList<Student> students)
