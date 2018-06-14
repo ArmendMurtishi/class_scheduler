@@ -30,6 +30,7 @@ public class SchedulerTest
         s.generate();
         assertEquals(1, s.getGlobalSchedule().get(0).size());
         assertEquals(2, s.getGlobalSchedule().get(1).size());
+        assertEquals(1, s.getGlobalSchedule().get(2).size());
         assertEquals("Math", s.getGlobalSchedule().get(0).get(0));
         assertEquals("Math", s.getStudentSchedules().get("Armend Murtishi").get(0));
         assertEquals("Math", s.getStudentSchedules().get("Test Student").get(0));
@@ -39,5 +40,7 @@ public class SchedulerTest
         assertEquals("Science", s.getStudentSchedules().get("Test Studen").get(1));
         assertEquals("Test Class 2", s.getGlobalSchedule().get(1).get(1));
         assertEquals("Test Class 2", s.getStudentSchedules().get("Test Student").get(1));
+        assertEquals("An elective", s.getStudentSchedules().get("Armend Murtishi").get(2));
+        assertEquals("Study Hall", s.getStudentSchedules().get("Armend Murtishi").get(3));
     }
 }

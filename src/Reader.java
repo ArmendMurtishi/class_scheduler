@@ -79,10 +79,10 @@ public class Reader
         ArrayList<String> requested = list_classes(file);
         // Add these classes to the unique classes list.
         for(String s : required)
-            if(uniqueRequiredClasses.contains(s))
+            if(!uniqueRequiredClasses.contains(s))
                 uniqueRequiredClasses.add(s);
         for(String s : requested)
-            if(uniqueRequestedClasses.contains(s))
+            if(!uniqueRequestedClasses.contains(s))
                 uniqueRequestedClasses.add(s);
         //file.nextLine(); - no need to call; list_classes will eat this extra line
         

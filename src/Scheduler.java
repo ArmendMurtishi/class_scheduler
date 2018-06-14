@@ -1,9 +1,12 @@
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
 public class Scheduler
 {
+    private static int maxBlock = 8;
+    
     private String file;
     private ArrayList<ArrayList<String>> globalSchedule = new ArrayList<ArrayList<String>>();
     private HashMap<String, ArrayList<String>> studentSchedules = new HashMap<String, ArrayList<String>>();
@@ -14,13 +17,12 @@ public class Scheduler
     public Scheduler(String file)
     {
         this.file = file;
-        for(int i = 0; i < 8 /* max blocks */; i++)
+        for(int i = 0; i < maxBlock; i++)
             globalSchedule.add(new ArrayList<String>());
     }
     
     
     private int currentBlock = 0;
-    private ArrayList<String> uniqueClasses;
     private ArrayList<Student> students;
     private ArrayList<String> classBuffer = new ArrayList<String>();
     
@@ -29,7 +31,8 @@ public class Scheduler
         // First, read the file into an ArrayList of students, checking for errors.
         Reader r = new Reader(file);
         r.read();
-        uniqueClasses = r.getUniqueClasses();
+        ArrayList<String> uniqueRequiredClasses = r.getUniqueRequiredClasses();
+        ArrayList<String> uniqueRequestedClasses = r.getUniqueRequestedClasses();
         students = r.getStudents();
         // Then, add all of them to the HashMap.
         for(Student s : students)
@@ -38,25 +41,37 @@ public class Scheduler
         // First, try to schedule all required classes successfully.
         while(students.stream().anyMatch((s) -> s.hasAnyRequired()))
         {
-            while(!uniqueClasses.isEmpty())
-            {
-                try { findAndScheduleMostCommonRequired(); }
-                // If we get an IndexOutOfBounds, it means that we went a block above the max.
-                // At this point, we simply say that these schedules are impossible to achieve and abort.
-                catch(IndexOutOfBoundsException exc) { throw new RuntimeException("Too few blocks to schedule all required classes."); }
-            }
-            advanceBlock();
+            while(!uniqueRequiredClasses.isEmpty())
+                findAndScheduleMostCommonRequired(uniqueRequiredClasses);
+                
+            advanceBlock(uniqueRequiredClasses);
+            // If we went a block above the max, we simply say that these schedules are impossible to achieve and abort.
+            if(currentBlock >= maxBlock)
+                throw new RuntimeException("Too few blocks to schedule all required classes.");
         }
-        // Now, try to schedule all requested classes, but not as strictly.
-        while(students.stream().anyMatch((s) -> s.hasAnyRequested()))
+        // Now, try to schedule all requested classes, but not as strictly;
+        // i.e., if we cannot schedule all of the classes, we don't abort, but rather fill open blocks with study halls.
+        while(students.stream().anyMatch((s) -> s.hasAnyRequested()) && currentBlock < maxBlock)
         {
+            while(!uniqueRequestedClasses.isEmpty())
+                findAndScheduleMostCommonRequested(uniqueRequestedClasses);
+            advanceBlock(uniqueRequiredClasses);
+        }
+        // Fill the remaining students' schedules with study halls.
+        for(int a = 0; a < students.size(); a++)
+        {
+            ArrayList<String> schedule = studentSchedules.get(students.get(a).getName());
+            for(int i = maxBlock - schedule.size(); i > 0; i--)
+                schedule.add("Study Hall");
         }
     }
     
-    private void findAndScheduleMostCommonRequired() { findAndScheduleMostCommon((Student s, String st) -> s.hasRequired(st)); }
-    private void findAndScheduleMostCommonRequested() { findAndScheduleMostCommon((Student s, String st) -> s.hasRequested(st)); }
+    private void findAndScheduleMostCommonRequired(ArrayList<String> uniqueClasses)
+    { findAndScheduleMostCommon(uniqueClasses, (Student s, String st) -> s.hasRequired(st)); }
+    private void findAndScheduleMostCommonRequested(ArrayList<String> uniqueClasses)
+    { findAndScheduleMostCommon(uniqueClasses, (Student s, String st) -> s.hasRequested(st)); }
     
-    private void findAndScheduleMostCommon(BiFunction<Student, String, Boolean> has)
+    private void findAndScheduleMostCommon(ArrayList<String> uniqueClasses, BiFunction<Student, String, Boolean> has)
     {
         String mostcommon = "";
         ArrayList<Student> studentsInMaxClass = new ArrayList<Student>(), studentsInCurrentClass = new ArrayList<Student>();
@@ -88,15 +103,15 @@ public class Scheduler
     
     private void schedule(String classname, int block, ArrayList<Student> students)
     {
+        globalSchedule.get(block).add(classname);
         for(int i = 0; i < students.size(); i++)
         {
             students.get(i).removeRequired(classname);
             studentSchedules.get(students.get(i).getName()).add(classname);
         }
-        globalSchedule.get(block).add(classname);
     }
     
-    private void advanceBlock()
+    private void advanceBlock(ArrayList<String> uniqueClasses)
     {
         int bufferSize = classBuffer.size();
         for(int i = 0; i < bufferSize; i++)

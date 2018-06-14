@@ -51,11 +51,13 @@ public class ReaderTest
         assertTrue(a.get(0).hasRequired("Science"));
         assertTrue(a.get(0).hasRequested("An elective"));
         // Each class here should be shown in the unique classes list.
-        ArrayList<String> u = r.getUniqueClasses();
-        assertEquals(3, u.size());
-        assertEquals("Math", u.get(0));
-        assertEquals("Science", u.get(1));
-        assertEquals("An elective", u.get(2));
+        ArrayList<String> uniqueRequired = r.getUniqueRequiredClasses();
+        ArrayList<String> uniqueRequested = r.getUniqueRequestedClasses();
+        assertEquals(2, uniqueRequired.size());
+        assertEquals("Math", uniqueRequired.get(0));
+        assertEquals("Science", uniqueRequired.get(1));
+        assertEquals(1, uniqueRequested.size());
+        assertEquals("An elective", uniqueRequested.get(0));
     }
     @Test
     public void testCorrectMultipleStudents()
@@ -79,13 +81,15 @@ public class ReaderTest
         assertFalse(a.get(1).hasAnyRequested());
         
         // Now check the unique classes list.
-        ArrayList<String> u = r.getUniqueClasses();
-        assertEquals(5, u.size());
-        assertEquals("Math", u.get(0));
-        assertEquals("Science", u.get(1));
-        assertEquals("An elective", u.get(2));
-        assertEquals("Test Class", u.get(3));
-        assertEquals("Test Class 2", u.get(4));
+        ArrayList<String> uniqueRequired = r.getUniqueRequiredClasses();
+        ArrayList<String> uniqueRequested = r.getUniqueRequestedClasses();
+        assertEquals(4, uniqueRequired.size());
+        assertEquals("Math", uniqueRequired.get(0));
+        assertEquals("Science", uniqueRequired.get(1));
+        assertEquals("Test Class", uniqueRequired.get(2));
+        assertEquals("Test Class 2", uniqueRequired.get(3));
+        assertEquals(1, uniqueRequested.size());
+        assertEquals("An elective", uniqueRequested.get(0));
     }
     @Test
     public void testNoComma()
