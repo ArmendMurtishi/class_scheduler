@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.NoSuchElementException;
 
 public class Reader
 {
@@ -25,9 +24,10 @@ public class Reader
     public static final String ERROR_MISSING_REQUIRED = "Missing \"" + REQUIRED_SEPARATOR + "\"!\nExpected \"" + REQUIRED_SEPARATOR + "\"\nGot ";
     public static final String ERROR_MISSING_REQUESTED_OR_NEW = "Found non-alphanumeric character in class name!\nDid you forget a \"" + REQUESTED_SEPARATOR + "\" or a blank line between students before this?";
     
-    private ArrayList<String> allUniqueClasses = new ArrayList<String>();
+    private ArrayList<String> uniqueRequiredClasses = new ArrayList<String>(), uniqueRequestedClasses = new ArrayList<String>();
     private ArrayList<Student> students = new ArrayList<Student>();
-    public ArrayList<String> getUniqueClasses() { return allUniqueClasses; }
+    public ArrayList<String> getUniqueRequiredClasses() { return uniqueRequiredClasses; }
+    public ArrayList<String> getUniqueRequestedClasses() { return uniqueRequestedClasses; }
     public ArrayList<Student> getStudents() { return students; }
     
     private String file;
@@ -45,9 +45,6 @@ public class Reader
         // so the best we can do is warn them when we find a line not following the class criteria.
         if(!s.matches("^[\\w\\s]+$"))
             throw new RuntimeException(ERROR_MISSING_REQUESTED_OR_NEW);
-        // If we have a proper class name, add it to the unique classes list.
-        if(!this.allUniqueClasses.contains(s))
-            allUniqueClasses.add(s);
         return s;
     }
     private ArrayList<String> list_classes(Scanner file)
@@ -80,6 +77,13 @@ public class Reader
         // By the grammar, this will call another function.
         ArrayList<String> required = list_classes(file);
         ArrayList<String> requested = list_classes(file);
+        // Add these classes to the unique classes list.
+        for(String s : required)
+            if(uniqueRequiredClasses.contains(s))
+                uniqueRequiredClasses.add(s);
+        for(String s : requested)
+            if(uniqueRequestedClasses.contains(s))
+                uniqueRequestedClasses.add(s);
         //file.nextLine(); - no need to call; list_classes will eat this extra line
         
         return new Student(name, grade, required, requested);
